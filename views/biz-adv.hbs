@@ -1,0 +1,82 @@
+<h1>{{title}}</h1>
+
+<a href="/biz-simple?section={{q.section}}">
+  단순 화면으로 보기 ▶️
+</a>
+
+<br /><br />
+
+<form action="/biz-adv">
+  <select name="section">
+    <option value="">전체 섹션</option>
+    <option value="1">한식</option>
+    <option value="2">분식</option>
+    <option value="3">중식</option>
+    <option value="4">일식</option>
+    <option value="5">양식</option>
+    <option value="6">카페</option>
+    <option value="7">카페</option>
+  </select>
+  <select name="floor">
+    <option value="">전체 층</option>
+    <option value="1">1층</option>
+    <option value="2">2층</option>
+    <option value="3">3층</option>
+  </select>
+  <select name="status">
+    <option value="">전체 상태</option>
+    <option value="OPN">영업중</option>
+    <option value="VCT">휴가중</option>
+    <option value="RMD">리모델링</option>
+    <option value="CLS">폐업</option>
+  </select>
+  <select name="order">
+    <option value="">식당 ID</option>
+    <option value="section_name">섹션</option>
+    <option value="floor">층</option>
+  </select>
+  <input type="submit" value="검색" />
+</form>
+
+<br />
+
+<table>
+  <thead>
+    <tr>
+      <th>업소명</th>
+      <th>섹션</th>
+      <th>층</th>
+      <th>상태</th>
+      <th>배달</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each businesses}}
+      <tr>
+        <td>{{business_name}}</td>
+        <td>{{section_name}}</td>
+        <td>{{floor}}</td>
+        <td>{{status_kor}}</td>
+        <td>
+          {{#if can_takeout}}
+            ✔️
+          {{else}}
+            ❌
+          {{/if}}
+        </td>
+        <td>
+          <a href="/business/{{business_id}}">
+            자세히
+          </a>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<br /><br />
+
+<a href="/">
+  ◀️ 섹션 목록으로 돌아가기️
+</a>

@@ -1,0 +1,18 @@
+<h1>{{title}}</h1>
+
+<ul>
+  <li>
+    <a href="biz-simple?section=">
+      <span>🌎</span>
+      전체
+    </a>
+  </li>
+  {{#each sections}}
+    <li>
+      <a href="biz-simple?section={{section_id}}">
+        <span>{{icon}}</span>
+        {{section_name}}
+      </a>
+    </li>
+  {{/each}}
+</ul>

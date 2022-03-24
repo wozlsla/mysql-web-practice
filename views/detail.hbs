@@ -1,0 +1,168 @@
+<h1>
+    {{ biz.icon }} {{ biz.business_name }}
+</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th colspan="2">
+                업소 정보
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>섹션</td>
+            <td>{{ biz.section_name }} ({{ biz.floor }}층)</td>
+        </tr>
+        <tr>
+            <td>현재 상태</td>
+            <td>{{ biz.status_kor }}</td>
+        </tr>
+        <tr>
+            <td>배달 가능</td>
+            <td>
+                {{#if biz.can_takeout}}
+                ✔️
+                {{^}}
+                ❌
+                {{/if}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<br><br><br>
+
+<h2>📋 메뉴</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>메뉴명</th>
+            <th>가격</th>
+            <th>칼로리</th>
+            <th>좋아요</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each menus}}
+        <tr>
+            <td>{{ menu_name }}</td>
+            <td>{{ price }}</td>
+            <td>{{ kilocalories }}</td>
+            <td>
+                <span>{{ likes }}</span>
+                <button class="small" onclick="putLike({{ menu_id }}, 1)">+</button>
+                <button class="small" onclick="putLike({{ menu_id }}, -1)">-</button>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<br><br><br>
+
+<h2>⭐ 평점</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>평점</th>
+            <th>코멘트</th>
+            <th colspan="2">일시</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each ratings}}
+        <tr>
+            <td>{{ stars }}</td>
+            <td>{{ comment }}</td>
+            <td>{{ created_fmt }}</td>
+            <td>
+                <button onclick="removeRating({{ rating_id }})">삭제</button>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<br>
+
+<select id="stars">
+    <option value="5">5점</option>
+    <option value="4">4점</option>
+    <option value="3">3점</option>
+    <option value="2">2점</option>
+    <option value="1">1점</option>
+</select>
+<input id="comment" type="text">
+<button onclick="addRating()">올리기</button>
+
+<br><br><br>
+
+<a href="/biz-simple?section=">
+    ◀️ 업소 목록으로 돌아가기️
+</a>
+
+<script>
+    function putLike(menu_id, like) {
+        fetch(`/menus/${menu_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                like: like
+            })
+        }).then((response) => response.json()).then(
+            (data) => {
+                if (data[0].affectedRows === 1) {
+                    location.reload()
+                } else {
+                    alert('오류가 발생했습니다.')
+                }
+            }
+        )
+    }
+
+    function addRating() {
+        fetch(`/ratings`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                business_id: {{ biz.business_id }},
+            stars: document.getElementById('stars').value,
+            comment: document.getElementById('comment').value,
+      })
+    }).then((response) => response.json()).then(
+                (data) => {
+                    console.log(data[0])
+                    if (data[0].affectedRows === 1) {
+                        location.reload()
+                    } else {
+                        alert('오류가 발생했습니다.')
+                    }
+                }
+            )
+  }
+
+    function removeRating(rating_id) {
+        if (!confirm('이 평점을 삭제하시겠습니까?')) return
+
+        fetch(`/ratings/${rating_id}`, {
+            method: 'DELETE'
+        }).then((response) => response.json()).then(
+            (data) => {
+                console.log(data[0])
+                if (data[0].affectedRows === 1) {
+                    location.reload()
+                } else {
+                    alert('오류가 발생했습니다.')
+                }
+            }
+        )
+    }
+</script>
